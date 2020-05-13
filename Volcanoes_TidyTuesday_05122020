@@ -1,0 +1,106 @@
+################################################################
+#Title: Volcanoes - Tidy Tuesday
+#Purpose: 
+#Created by: L Pandori
+#Created: 05/12/2020
+#Last edited: 05/12/2020
+################################################################
+
+##### Package upload #####
+# Clear workspace
+rm(lists=ls())
+
+# Load libraries
+library(tidyverse)
+library(viridis)
+
+##### Data upload and tidy ####
+eruptions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/eruptions.csv')
+
+events <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/events.csv')
+
+##### How worried should you be about eruptions? #####
+# Find volcanoes in USA, Canada & Mexico
+volcano <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/volcano.csv')
+
+
+NAmerica <- volcano %>%
+  filter(country == 'Mexico' | country == 'United States' | country == 'Canada')
+
+NAmerica <- unique(NAmerica$volcano_name)
+
+# Find top 5 volcanoes with highest # of eruptions in CE
+top_eruptions <- eruptions %>%
+  # filter to volcanoes in N America
+  filter(volcano_name %in% NAmerica) %>%
+  # filter to eruptions in common era %>%
+  filter(start_year >= 0) %>%
+  group_by(volcano_name) %>%
+  summarize(eruption_number = length(volcano_name)) %>%
+  arrange(desc(eruption_number)) %>%
+  top_n(5)
+
+# Get list of names to filter eruptions for time series
+eruptions <- eruptions %>%
+  filter(volcano_name %in% top_eruptions$volcano_name) %>%
+  filter(start_year >= 0)
+
+
+names_list <- top_eruptions$volcano_name
+
+# make output df 
+eruption_list <- top_eruptions[1,1:2]
+eruption_list$yr_dif <- NA
+eruption_list$eruption_number <- NULL
+eruption_list <- eruption_list[0, 1:2]
+
+for (i in 1:length(names_list))
+{
+  # subset relevant data
+  eruptions2 <- eruptions %>%
+    filter(volcano_name == names_list[i]) %>%
+    # get differences in years b/w events
+    mutate(yrdif = lag(start_year) - start_year) %>%
+    select(volcano_name, yrdif)
+  
+  # put into list 
+  eruption_list <- rbind(eruption_list, eruptions2)
+}
+
+
+# Now get frequency of yr_dif for top 5 most frequently eruption volcanoes in CAN/USA/MEX
+
+# make list of possible differences in years
+yrdif_possible <- seq(1, 825, by=2)
+
+eruption_list2 <- eruption_list %>%
+  # get rid of blank 1st column for each volcano (NA)
+  filter(!is.na(yrdif)) %>%
+  # group by name and possible differences
+  group_by(volcano_name, yrdif) %>%
+  # get sum of obs for each eruption_list value for each volcano name
+  summarize(count = length(volcano_name))
+
+  
+# plot results
+
+# set theme 
+lltheme <- theme_set(
+  theme_bw() + 
+    theme(text = element_text(size = 12),
+          # tilt and adjust position of x axis labels
+          axis.text.y = element_text(size = 11, color = 'black'),
+          axis.text.x = element_text( size = 11, color = 'black')))
+
+ggplot(eruption_list2) + 
+  geom_tile(mapping = aes(x = yrdif, y = volcano_name, fill = count, width = 0.32)) +
+  scale_x_log10() + 
+  xlab('Time between eruptions (years)') +
+  scale_fill_viridis_c(option = 'plasma', na.value = 'black', name = '# eruptions') + 
+  ylab('Volcano name') + 
+  labs(title = 'Frequency of Volcano Eruption Latency',
+       subtitle = '5 most frequently erupting volcanoes in CAN/USA/MEX',
+       caption = 'Source: The Smithsonian Institution, CE only')  
+
+# export
+ggsave('Volcano_Plot_0122020.png', width = 6, height = 4)
