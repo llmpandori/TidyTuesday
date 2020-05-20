@@ -126,7 +126,7 @@ ggplot() +
   geom_point(mapping = aes(x = 60, y= 10), 
              color = 'cadetblue4') +
   coord_cartesian(xlim = c(60, 85)) + 
-  labs(title = 'Volleyball Player Height and Kills', 
+  labs(title = 'Beach Volleyball Player Height and Kills', 
           subtitle = 'Height is related to proportional kills for men but not for women', 
           caption = 'Data source: Tidy Tuesday, Adam Vagnar, FIVB, AVB') +
   theme_modern_rc()
