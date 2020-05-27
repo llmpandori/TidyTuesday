@@ -56,6 +56,7 @@ dailytemp_place_summary_ccsp <- arrange(dailytemp_place_summary_ccsp, tideht, pl
 
 
 ##### Make a Rough Draft Figure #####
+# put med for kW test
 
 # Boxplot
 ggplot() + 
@@ -74,7 +75,7 @@ ggplot() +
 # Modified boxplot
 ggplot() + 
   geom_crossbar(data = dailytemp_place_summary_ccsp,
-                mapping = aes(x = place, y = avg,
+                mapping = aes(x = place, y = median,
                               ymax = max, ymin = min)) + 
   facet_wrap(~ tideht)
 
