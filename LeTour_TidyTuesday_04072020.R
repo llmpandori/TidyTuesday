@@ -52,7 +52,7 @@ tdf_winners <- readr::read_csv('https://raw.githubusercontent.com/rfordatascienc
     annotation_custom(grob=bike,
                       xmin= 1910, xmax= 1975, ymin=30, ymax=43) +
     # nice labels
-    labs(title = 'Winning Tour de France Speed Increases over Time') + 
+    labs(title = 'Speed of Tour de France Winners Increases over Time') + 
     ylab('Speed (km/hr)') + 
     xlab('Year') + 
     # cleaner theme
