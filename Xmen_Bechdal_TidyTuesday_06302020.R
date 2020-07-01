@@ -18,9 +18,9 @@ xmen_bechdel <- readr::read_csv('https://raw.githubusercontent.com/rfordatascien
 
 # tidy 
 bechdel <- tibble(
-  Answer = c('Yes', 'No'),
-  pass = c(length(filter(xmen_bechdel, pass_bechdel == 'yes')),
-                    length(xmen_bechdel$pass_bechdel)-4))
+  Answer = c('Yes','No'),
+  pass = c(nrow(filter(xmen_bechdel, pass_bechdel == 'yes')),
+                nrow(filter(xmen_bechdel, pass_bechdel == 'no'))))
 
 # calculate things to plot (thank you R Graph Gallery)
 bechdel <- bechdel %>%
