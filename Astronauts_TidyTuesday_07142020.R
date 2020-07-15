@@ -59,7 +59,8 @@ astro <- astro %>%
 astro <- astro %>% 
   arrange(desc(`Percent of Astronauts`)) %>% 
   filter(`Percent of Astronauts` >= 0.01) %>%
-  rename('Nationality' = 'nationality')
+  rename('Nationality' = 'nationality') %>%
+  mutate(`Percent of Astronauts` = `Percent of Astronauts`*100)
 
 ##### Use formattable to make a Nice Table #####
 # tutorial thank you: https://www.littlemissdata.com/blog/prettytables
