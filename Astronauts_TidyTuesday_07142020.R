@@ -1,14 +1,16 @@
 ################################################################
-#Title: Astronauts Tidy Tuesday 
-#Purpose: make a cool table like five-thirty-eight using reactable
-#Created by: L Pandori
-#Created: 07/14/2020
-#Last edited: 07/14/2020
+# Title: Astronauts Tidy Tuesday 
+# Purpose: Make a cool table 
+# Created by: L Pandori
+# Created: 07/14/2020
+# Last edited: 07/14/2020
 ################################################################
 
 ##### Package upload #####
 library(tidyverse) # it is Tuesday
 library(formattable) # nice tables
+
+# asked for reactable tutorial suggestions on twitter - thank you to folks who replied 
 
 ##### Data upload and tidy #####
 
@@ -16,12 +18,12 @@ library(formattable) # nice tables
 astro <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-07-14/astronauts.csv')
 
 # tidy 
-# goal: get stats by country to put in table
+# goal: get stats by nationality to put in table
     # percent of total astronauts from each country
     # year of first mission
-    # percent of military vs civilian
+    # most common occupation
 
-# Function to calculate mode (Stack Overflow - https://stackoverflow.com/questions/46845848/statistical-mode-of-a-categorical-variable-in-r-using-mlv)
+# Function to calculate mode of occupation (Stack Overflow - https://stackoverflow.com/questions/46845848/statistical-mode-of-a-categorical-variable-in-r-using-mlv)
 
 calculate_mode <- function(x) {
   # get list of unique values in x
@@ -30,7 +32,7 @@ calculate_mode <- function(x) {
   uniqx[which.max(tabulate(match(x, uniqx)))]
 }
 
-# Functino to make 1st letter capitalized
+# function to make 1st letter of occupation capitalized 
 # https://rstudio-pubs-static.s3.amazonaws.com/408658_512da947714740b99253228f084a08a9.html
 
 CapStr <- function(y) {
@@ -39,6 +41,7 @@ CapStr <- function(y) {
         sep="", collapse=" ")
 }
 
+# apply across occupations 
 astro$occupation2 <- sapply(astro$occupation, CapStr)
 
 
